@@ -139,6 +139,9 @@ int main() {
 }
 ```
 
+## notes
+There is currently a few issues with the project which I intend to fix and make better. I've plans to make it stealthier by adding call stack spoofing, dynamic stub generation (polymorphism) and return address spoofing. None of these additions should break current syntax and usage, so you don't have to worry about future update breaking your code.
+
 ## license
 This project is provided for educational and research purposes. Users are responsible for ensuring compliance with applicable laws and regulations.
 
