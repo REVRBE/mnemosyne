@@ -15,7 +15,7 @@ A modern C++17 header-only library for direct Windows syscall invocation and PEB
 ## requirements
 
 - **Compiler**: Any C++17-supported compiler should work
-- **Platform**: Windows (x86/x64)
+- **Platform**: Windows (x64)
 - **Dependencies**: Windows SDK headers (`windows.h`, `winternl.h`, `ntstatus.h`)
 
 ## quick start
