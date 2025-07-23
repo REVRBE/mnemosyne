@@ -65,7 +65,7 @@ int main() {
 ### another example
 ```cpp
 #include <cstdio>
-#include "../include/mnemosyne.hpp"
+#include "mnemosyne.hpp"
 
 int main() {
     mnemosyne::syscall::initialize();
