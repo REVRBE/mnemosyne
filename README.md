@@ -140,7 +140,7 @@ int main() {
 }
 ```
 ### performance tests
-In **/tests** directory you will find `mnemosyne_mem.hpp` and `main.cpp` these contain process memory-related utilities and performance tests. It's almost as fast as regular WinAPI, i.e. ReadProcessMemory and WriteProcessMemory, performing better with more iterations, approx. **1.01x slower** reads and **1.81x faster** writes with a million iterations. Regardless of buffer size it always performs a bit slower for reads, but faster for writes.
+In **/tests** directory you will find `mnemosyne_mem.hpp` and `main.cpp` these contain process memory-related utilities and performance tests. It's almost as fast as regular WinAPI, i.e. ReadProcessMemory and WriteProcessMemory, performing better with more iterations, approx. **1.20x slower** reads and **1.76x faster** writes with a million iterations. Regardless of buffer size it always performs a bit slower for reads, but faster for writes.
 
 ## license
 This project is provided for educational and research purposes. Users are responsible for ensuring compliance with applicable laws and regulations.
