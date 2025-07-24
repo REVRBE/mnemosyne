@@ -1,6 +1,6 @@
 # mnemosyne
 
-A modern C++17 header-only library for direct Windows syscall invocation and PEB (Process Environment Block) manipulation. **mnemosyne** provides a clean, efficient interface for low-level Windows system programming while maintaining type safety and performance.
+A modern C++17 header-only library for direct Windows syscall invocation and PEB (Process Environment Block) manipulation. **mnemosyne** provides a clean, efficient interface for low-level Windows system programming while maintaining type safety and performance with minimal dependencies.
 
 ## features
 
@@ -8,13 +8,15 @@ A modern C++17 header-only library for direct Windows syscall invocation and PEB
 - **PEB walking**: Navigate the Process Environment Block to enumerate loaded modules
 - **Dynamic SSN resolution**: Automatically extract System Service Numbers (SSNs) from NTDLL exports
 - **Header-only design**: Easy integration with zero configuration
+- **Minimal dependencies**: Custom implementations replace STL containers for reduced footprint
 - **Hash-based lookups**: Fast module and function resolution using DJB2 hashing
-- **Memory-mapped syscall stub**: Efficient syscall execution with runtime SSN patching
+- **Dynamic syscall stubs**: Runtime-generated polymorphic syscall execution with obfuscation
 - **Type-safe interface**: Template-based design with compile-time optimizations
+- **Unified function resolution**: Single template function handles hash, narrow, and wide string lookups
 
 ## requirements
 
-- **Compiler**: Any C++17-supported compiler should work
+- **Compiler**: Any C++17-compliant compiler (MSVC, Clang, GCC)
 - **Platform**: Windows (x64)
 - **Dependencies**: Windows SDK headers (`windows.h`, `winternl.h`, `ntstatus.h`)
 
@@ -138,9 +140,6 @@ int main() {
     return 0;
 }
 ```
-
-## notes
-There is currently a few issues with the project which I intend to fix and make better. I've plans to make it stealthier by adding call stack/return address spoofing and dynamic stub generation (polymorphism). None of these additions should break current syntax and usage, so you don't have to worry about future update breaking your code.
 
 ## license
 This project is provided for educational and research purposes. Users are responsible for ensuring compliance with applicable laws and regulations.
