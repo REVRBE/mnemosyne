@@ -395,6 +395,17 @@ namespace mnemosyne {
     }
 
     namespace detail {
+
+        struct stub_cache {
+            void* stub_memory = nullptr;
+            bool initialized = false;
+        };
+
+        inline stub_cache& get_stub_cache() noexcept {
+            static thread_local stub_cache cache{};
+            return cache;
+        }
+
         __forceinline void* generate_dynamic_stub() {
             auto ntdll_base = peb::get_module(DJB2(L"ntdll.dll"));
             if (!ntdll_base) return nullptr;
@@ -431,37 +442,31 @@ namespace mnemosyne {
 
             if (status != STATUS_SUCCESS) return nullptr;
 
-            auto stub_bytes = static_cast<std::uint8_t*>(stub_memory);
-
-            auto random_variant = get_random_seed();
-            auto variant_info = build_stub_variant(stub_bytes, random_variant);
-
-            *reinterpret_cast<std::uint32_t*>(stub_bytes + variant_info.ssn_offset) = 0;
-
-            stub_bytes[variant_info.ssn_offset + 4] = construct_byte(0x0F);
-            stub_bytes[variant_info.ssn_offset + 5] = construct_byte(0x05);
-            stub_bytes[variant_info.ssn_offset + 6] = construct_byte(0xC3);
-
             return stub_memory;
         }
 
         template<typename return_type, typename... args_t>
         __forceinline return_type execute_syscall(std::uint32_t ssn, args_t... args) {
-            auto stub = generate_dynamic_stub();
-            if (!stub) return return_type{};
+            auto& cache = get_stub_cache();
 
-            auto stub_bytes = static_cast<std::uint8_t*>(stub);
-
-            std::uint8_t ssn_offset;
-            switch (stub_bytes[0]) {
-            case 0x90: ssn_offset = 5; break;
-            case 0x50: ssn_offset = 6; break;
-            default:   ssn_offset = 4; break;
+            if (!cache.initialized) {
+                cache.stub_memory = generate_dynamic_stub();
+                cache.initialized = true;
             }
 
-            *reinterpret_cast<std::uint32_t*>(stub_bytes + ssn_offset) = ssn;
+            if (!cache.stub_memory) return return_type{};
 
-            auto func = reinterpret_cast<return_type(NTAPI*)(args_t...)>(stub);
+            auto stub_bytes = static_cast<std::uint8_t*>(cache.stub_memory);
+            auto random_variant = get_random_seed();
+            auto variant_info = build_stub_variant(stub_bytes, random_variant);
+
+            *reinterpret_cast<std::uint32_t*>(stub_bytes + variant_info.ssn_offset) = ssn;
+
+            stub_bytes[variant_info.ssn_offset + 4] = construct_byte(0x0F);
+            stub_bytes[variant_info.ssn_offset + 5] = construct_byte(0x05);
+            stub_bytes[variant_info.ssn_offset + 6] = construct_byte(0xC3);
+
+            auto func = reinterpret_cast<return_type(NTAPI*)(args_t...)>(stub_bytes);
             return func(args...);
         }
     }
