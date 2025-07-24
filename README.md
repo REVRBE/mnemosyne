@@ -36,7 +36,6 @@ Simply include the header file in your project:
 
 int main() {
     mnemosyne::syscall::initialize();
-    printf("[>] loaded syscalls: %zu\n", mnemosyne::detail::get_syscall_table().size());
     
     auto ntdll = mnemosyne::peb::get_module(DJB2(L"ntdll.dll"));
     auto kernel32 = mnemosyne::peb::get_module(DJB2("kernel32.dll"));
